@@ -1,5 +1,7 @@
 package Template::Teeny;
 
+our $VERSION = '0.00_002';
+
 our $CODE_START = <<'END';
 sub {
     my ($stash_a, $out) = @_;
@@ -207,12 +209,13 @@ sub process {
     }
 
     my $tpl_str = '';
-    if(!ref $tpl){
-        $tpl_str .= $self->_get_tpl_str($tpl);
-    }
-
+    
     # XXX - This should really take the full name
     my $compile = $compiled_tpls->{ $tpl } ||= do {
+        if(!ref $tpl){
+            $tpl_str .= $self->_get_tpl_str($tpl);
+        }
+
         my $AST = $self->parse($tpl_str);
         $AST = $self->_optimize($AST);
         my $code_str = $self->compile($AST);
@@ -258,11 +261,7 @@ Template::Teeny - Teeny-weeny templating system
 
 =head1 VERSION
 
-Version 0.00_001
-
-=cut
-
-our $VERSION = '0.00_001';
+Version 0.00_002
 
 =head1 SYNOPSIS
 
@@ -373,6 +372,10 @@ Takes a string representing the template. Returns an AST.
 
 This method take a generated AST and translates it into an eval-able
 string of perl code.
+
+=head2 include_path
+
+This is an accessor for the template include path.
 
 =head1 AUTHOR
 
